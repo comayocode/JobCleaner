@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobCleaner</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+
+<body>
+  <div class="popup-container">
+    <h1 class="title">JobCleaner</h1>
+
+    <div class="option">
+      <label>
+        <input type="checkbox" id="toggleExtension" />
+        Habilitar limpieza de ofertas
+      </label>
+    </div>
+
+    <div class="option">
+      <label for="empresasInput">Empresas bloqueadas:</label>
+      <textarea id="empresasInput" placeholder="Ejemplo: BairesDev, Proservis, Globant"></textarea>
+    </div>
+
+    <button id="guardarBtn">Guardar configuración</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>

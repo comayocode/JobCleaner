@@ -1,0 +1,161 @@
+let empresasBloqueadas = [];
+let extensionActiva = true;
+
+// Cargar configuración desde chrome.storage
+function cargarConfiguracion(callback) {
+  chrome.storage.sync.get(['enabled', 'empresasBloqueadas'], (data) => {
+    extensionActiva = data.enabled ?? true;
+    empresasBloqueadas = data.empresasBloqueadas || [];
+    if (callback) callback();
+  });
+}
+
+function mostrarAlertaPersonalizada(mensaje) {
+  // Evitamos duplicados
+  const existente = document.querySelector('#alertaEmpresas');
+  if (existente) existente.remove();
+
+  const svgIcon = `<svg width="25" height="22" viewBox="0 0 25 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M14.843 18.4984L13.2596 21.5695C13.2039 21.6777 13.1192 21.7723 13.0127 21.8452C12.9062 21.9182 12.7812 21.9673 12.6484 21.9884C12.5156 22.0094 12.379 22.0018 12.2503 21.9661C12.1216 21.9305 12.0047 21.8679 11.9095 21.7836L5.02075 15.7221C5.3341 15.4992 5.57078 15.2059 5.70079 14.8759L5.70746 14.8598L5.71412 14.8422L6.08081 13.8273L6.14915 13.6909L6.25083 13.5765C6.32583 13.5075 6.4175 13.4591 6.51084 13.4298L7.63258 13.1027L7.65425 13.0969L7.67258 13.0896C7.9126 13.0113 8.12761 12.9004 8.31763 12.7566L14.843 18.4984ZM11.0961 7.54575C12.0528 7.39233 13.0375 7.44579 13.9655 7.70153C14.8934 7.95727 15.7369 8.40763 16.4232 9.01383C16.9956 9.51411 17.45 10.1091 17.76 10.7646C18.0701 11.42 18.2297 12.1229 18.2297 12.8329C18.2297 13.5428 18.0701 14.2458 17.76 14.9012C17.45 15.5567 16.9956 16.1517 16.4232 16.652L15.7614 17.2327L9.07101 11.3457L9.07267 11.3311L9.04934 11.048C9.02554 10.9202 8.987 10.7949 8.93433 10.674C9.07434 10.63 9.20879 10.5738 9.33769 10.5054L9.4877 10.4174L9.59771 10.3426C9.92773 10.1035 10.1761 9.7882 10.3144 9.43621L10.3211 9.41861L10.3261 9.40101L10.8411 7.9784L10.8878 7.86547C10.9434 7.75009 11.0128 7.64352 11.0961 7.54575ZM3.724 8.0004C3.81845 8.0004 3.90512 8.02484 3.98401 8.07373C4.0618 8.12457 4.11624 8.18959 4.14736 8.26879L4.51571 9.28809C4.62739 9.59607 4.8174 9.8762 5.07075 10.1079C5.32271 10.3375 5.63202 10.5123 5.97414 10.6183L7.10755 10.9512C7.19649 10.9789 7.27331 11.0304 7.32715 11.0986C7.38098 11.1668 7.40911 11.2481 7.40757 11.3311C7.40911 11.4141 7.38098 11.4954 7.32715 11.5636C7.27331 11.6317 7.19649 11.6833 7.10755 11.7109L5.97414 12.0424C5.62912 12.1451 5.3141 12.321 5.05742 12.5528C4.80073 12.7845 4.60739 13.0661 4.49405 13.377L4.12569 14.3963C4.09593 14.4742 4.03935 14.5421 3.96378 14.5904C3.88822 14.6388 3.79742 14.6653 3.70399 14.6662C3.61058 14.6645 3.51997 14.6378 3.44431 14.5895C3.36864 14.5413 3.31153 14.4739 3.28063 14.3963L2.91394 13.377C2.79927 13.0686 2.60535 12.7875 2.34724 12.5557C2.0913 12.3251 1.77725 12.1508 1.43051 12.0468L0.297107 11.7153C0.231804 11.6929 0.173077 11.6579 0.125287 11.6127C0.077497 11.5676 0.0418711 11.5136 0.0210548 11.4547C0.00023847 11.3958 -0.00523363 11.3335 0.00504481 11.2725C0.0153232 11.2115 0.0410882 11.1533 0.0804266 11.1023C0.133623 11.0348 0.209345 10.9836 0.297107 10.9556L0.320442 10.9512L1.45385 10.6183C1.79887 10.5156 2.11222 10.3426 2.36891 10.1123C2.62559 9.8806 2.8206 9.59901 2.93561 9.28809L3.3023 8.26879C3.33539 8.19142 3.39258 8.12382 3.46731 8.07373C3.54233 8.02675 3.63192 8.00116 3.724 8.0004ZM8.17928 1.4186e-05C8.30912 -0.000120307 8.4357 0.0358072 8.54097 0.102677C8.6468 0.172051 8.72685 0.267499 8.77099 0.376934L9.28769 1.80395C9.44436 2.23514 9.71105 2.62672 10.0644 2.95084C10.4178 3.27497 10.8495 3.51842 11.3262 3.66655L12.9146 4.13C13.0366 4.17128 13.142 4.24319 13.2179 4.33679C13.2932 4.43245 13.3335 4.54603 13.3335 4.66238C13.3335 4.77873 13.2932 4.89231 13.2179 4.98797C13.142 5.08157 13.0366 5.15348 12.9146 5.19476L11.3262 5.65821C10.8407 5.80441 10.4015 6.04967 10.0444 6.37392C9.68322 6.70008 9.41329 7.09576 9.25602 7.52961L8.73932 8.95663C8.6998 9.05471 8.63134 9.14177 8.54097 9.20889L8.5093 9.22942C8.43016 9.27989 8.33857 9.31318 8.24202 9.32657C8.14546 9.33997 8.04668 9.33309 7.95372 9.30649C7.86077 9.27989 7.77627 9.23433 7.70714 9.17353C7.638 9.11273 7.58618 9.03841 7.55591 8.95663L7.03921 7.52961C6.88075 7.09719 6.61029 6.70307 6.24916 6.37832C5.89135 6.05557 5.45228 5.8114 4.96741 5.66555L3.38064 5.2021C3.25889 5.16121 3.15343 5.08983 3.07729 4.99677C3.00165 4.90097 2.96112 4.7871 2.96112 4.67045C2.96112 4.5538 3.00165 4.43993 3.07729 4.34413C3.15343 4.25107 3.25889 4.17969 3.38064 4.1388L3.41231 4.13L4.99908 3.66655C5.48244 3.52282 5.9208 3.27936 6.28083 2.95671C6.64085 2.63405 6.91087 2.23807 7.07088 1.80395L7.58758 0.376934C7.62771 0.266837 7.70675 0.170895 7.81318 0.103094C7.91962 0.0352931 8.04789 -0.000821596 8.17928 1.4186e-05ZM23.5769 1.68075C23.7334 1.54325 23.9456 1.46608 24.1667 1.46622C24.3879 1.46636 24.5999 1.54379 24.7562 1.68149C24.9125 1.81918 25.0002 2.00586 25 2.20045C24.9998 2.39505 24.9118 2.58162 24.7554 2.71912L18.1599 8.52398C17.8088 8.14261 17.4133 7.79459 16.9799 7.48562L23.5769 1.68075Z" fill="white" fill-opacity="0.87"/>
+</svg>
+`;
+
+
+  const alerta = document.createElement('div');
+  alerta.id = 'alertaEmpresas';
+  alerta.innerHTML = `
+    <div class="toast-content">
+      <div class="toast-left">
+        <div class="toast-icon">${svgIcon}</div>
+          <div class="toast-text">
+            <div class="toast-header">
+              <div class="toast-title">Ofertas eliminadas</div>
+              <button id="cerrarAlerta">&times;</button>
+            </div>
+          <div class="toast-description">${mensaje.replace(/\n/g, '<br>')}</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Estilos de alerta
+  Object.assign(alerta.style, {
+    position: 'fixed',
+    top: '20px',
+    right: '20px',
+    width: '380px',
+    background: '#222',
+    color: 'white',
+    borderRadius: '12px',
+    borderLeft: '5px solid white',
+    boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
+    fontFamily: 'system-ui, sans-serif',
+    fontSize: '14px',
+    zIndex: 99999,
+    opacity: '0',
+    transform: 'translateY(-10px)',
+    transition: 'opacity 0.4s ease, transform 0.3s ease',
+    padding: '12px 16px'
+  });
+
+  const toastMain = alerta.querySelector('.toast-text');
+  Object.assign(toastMain.style, {
+    width: "100%"
+  });
+
+  const left = alerta.querySelector('.toast-left');
+  Object.assign(left.style, {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '10px'
+  });
+
+  const title = alerta.querySelector('.toast-title');
+  Object.assign(title.style, {
+    fontSize: '16px',
+    fontWeight: '600',
+    color: 'white'
+  });
+
+  const header = alerta.querySelector('.toast-header');
+  Object.assign(header.style, {
+    width: "100%",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  });
+
+  const closeBtn = alerta.querySelector('#cerrarAlerta');
+  Object.assign(closeBtn.style, {
+    background: 'transparent',
+    border: 'none',
+    color: 'white',
+    fontSize: '18px',
+    cursor: 'pointer',
+    lineHeight: '1',
+    padding: '0',
+    marginLeft: '10px'
+  });
+
+  const desc = alerta.querySelector('.toast-description');
+  Object.assign(desc.style, {
+    fontSize: '13px',
+    opacity: '0.85',
+    marginTop: '4px'
+  });
+
+  document.body.appendChild(alerta);
+  requestAnimationFrame(() => {
+    alerta.style.opacity = '1';
+    alerta.style.transform = 'translateY(0)';
+  });
+
+  // Eliminar alerta luego de X segundos
+  closeBtn.addEventListener('click', () => alerta.remove());
+  setTimeout(() => alerta.remove(), 5000);
+}
+
+// Filtrar ofertas
+function filtrarOfertas() {
+  if (!extensionActiva) return;
+  const container = document.querySelector('#offersGridOfferContainer');
+  if (!container) return;
+
+  const contador = {};
+  empresasBloqueadas.forEach(e => contador[e] = 0);
+
+  const ofertas = container.querySelectorAll('article');
+  ofertas.forEach(oferta => {
+    const empresa = oferta.querySelector('a.fc_base.t_ellipsis')?.textContent?.trim();
+    if (empresa && empresasBloqueadas.some(e => empresa.includes(e))) {
+      oferta.remove();
+      const clave = empresasBloqueadas.find(e => empresa.includes(e));
+      contador[clave]++;
+    }
+  });
+
+  const eliminadas = Object.entries(contador).filter(([_, n]) => n > 0);
+  if (eliminadas.length > 0) {
+    const mensaje = eliminadas.map(([empresa, n]) => `➜ ${n} ofertas de ${empresa}`).join('\n');
+    mostrarAlertaPersonalizada(mensaje);
+  }
+}
+
+// Observar cambios (scroll o AJAX)
+function iniciarObservador() {
+  const container = document.querySelector('#offersGridOfferContainer');
+  if (!container) return;
+
+  filtrarOfertas();
+  const observer = new MutationObserver(filtrarOfertas);
+  observer.observe(container, { childList: true, subtree: true });
+}
+
+// Inicialización
+const interval = setInterval(() => {
+  const container = document.querySelector('#offersGridOfferContainer');
+  if (container) {
+    clearInterval(interval);
+    cargarConfiguracion(iniciarObservador);
+  }
+}, 1000);
