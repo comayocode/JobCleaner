@@ -31,7 +31,7 @@ function mostrarAlertaPersonalizada(mensaje) {
     background: '#222',
     color: 'white',
     borderRadius: '12px',
-    borderLeft: '5px solid white',
+    borderLeft: '5px solid #B8D0D9',
     boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
     fontFamily: 'system-ui, sans-serif',
     fontSize: '14px',
