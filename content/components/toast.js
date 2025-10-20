@@ -88,7 +88,7 @@ function mostrarAlertaPersonalizada(mensaje) {
   // Animaciones abrir y cerrar
   document.body.appendChild(alerta);
   requestAnimationFrame(() => {
-    alerta.style.opacity = '0';
+    alerta.style.opacity = '1';
     alerta.style.transform = 'translateY(0)';
   });
 
