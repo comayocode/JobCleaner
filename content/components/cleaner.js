@@ -18,6 +18,8 @@ function limpiarOfertas(empresasBloqueadas) {
   const eliminadas = Object.entries(contador).filter(([_, n]) => n > 0);
   if (eliminadas.length > 0) {
     const mensaje = eliminadas.map(([empresa, n]) => `➜ ${n} ofertas de ${empresa}`).join('\n');
-    mostrarAlertaPersonalizada(mensaje);
+    setTimeout(() => {
+      mostrarAlertaPersonalizada(mensaje, 'info', 'Ofertas eliminadas');
+    }, 100);
   }
 }
