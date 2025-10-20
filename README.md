@@ -1,6 +1,6 @@
-# CleanJob — Extensión para limpiar resultados en CompuTrabajo
+# JobCleaner — Extensión para limpiar resultados en CompuTrabajo
 
-**CleanJob** es una extensión de navegador (para Google Chrome y navegadores basados en Chromium) que te permite **ocultar ofertas de empleo de empresas específicas** en [CompuTrabajo.com.co](https://www.computrabajo.com.co).
+**JobCleaner** es una extensión de navegador (para Google Chrome y navegadores basados en Chromium) que te permite **ocultar ofertas de empleo de empresas específicas** en [CompuTrabajo.com.co](https://www.computrabajo.com.co).
 
 Su objetivo es ofrecer una experiencia más limpia y personalizada durante la búsqueda de empleo, eliminando resultados de empresas que el usuario decida no ver.
 
@@ -18,7 +18,7 @@ Su objetivo es ofrecer una experiencia más limpia y personalizada durante la b�
 
 ## ¿Cómo funciona?
 
-Una vez habilitada, CleanJob analiza los resultados de búsqueda en CompuTrabajo y **elimina automáticamente las ofertas publicadas por las empresas que hayas añadido a tu lista de bloqueadas**.
+Una vez habilitada, JobCleaner analiza los resultados de búsqueda en CompuTrabajo y **elimina automáticamente las ofertas publicadas por las empresas que hayas añadido a tu lista de bloqueadas**.
 
 Puedes gestionar esta lista directamente desde el panel de la extensión.
 
@@ -29,7 +29,7 @@ Puedes gestionar esta lista directamente desde el panel de la extensión.
 1. Descarga o clona este repositorio:
 
    ```bash
-   git clone [por definir]
+   git clone https://github.com/comayocode/JobCleaner
    ```
 
 2. Abre Google Chrome y entra en:
@@ -40,23 +40,38 @@ Puedes gestionar esta lista directamente desde el panel de la extensión.
 
 3. Activa el Modo Desarrollador (esquina superior derecha).
 
-4. Haz clic en "Cargar descomprimida" y selecciona la carpeta del proyecto (cleanjob).
+4. Haz clic en "Cargar descomprimida" y selecciona la carpeta del proyecto (JobCleaner).
 
-5. ¡Listo! Verás el ícono de CleanJob en tu barra de extensiones.
+5. ¡Listo! Verás el ícono de JobCleaner en tu barra de extensiones.
 
 ## Estructura del proyecto
 
-_**TODO**: Completar árbol_
-
 ```bash
-cleanjob/
+JobCleaner/                   → Carpeta raíz del proyecto
 │
-└──
+├── content/                  → Código principal que se ejecuta dentro de Computrabajo (content script)
+│   ├── components/           → Componentes reutilizables para mantener el código modular
+│   │   ├── cleaner.js        → Lógica encargada de eliminar las ofertas según empresas bloqueadas
+│   │   └── toast.js          → Componente visual de alerta/toast para mostrar notificaciones en pantalla
+│   │
+│   └── content.js            → Punto de entrada principal del content script (inicializa y coordina todo)
+│
+├── icons/                    → Iconos usados por la extensión
+│   └── icon128.png           → Icono principal mostrado en la barra del navegador y en la tienda
+│
+├── popup/                    → Interfaz del popup (UI visible al hacer clic en el ícono de la extensión)
+│   ├── popup.css             → Estilos visuales del popup
+│   ├── popup.html            → Estructura HTML del popup
+│   └── popup.js              → Lógica de interacción y almacenamiento de configuración del popup
+│
+├── .gitignore                → Define qué archivos o carpetas ignorar en Git
+├── manifest.json             → Archivo de configuración principal de la extensión (nombre, permisos, scripts, etc.)
+└── README.md                 → Documentación del proyecto (guía de uso, instalación, propósito, etc.)
 ```
 
 ## Privacidad y transparencia
 
-CleanJob:
+JobCleaner:
 
 - No recopila información del usuario.
 - No envía datos a servidores externos.
@@ -95,8 +110,7 @@ Este proyecto está bajo la licencia MIT, lo que significa que puedes usarlo, mo
 
 ## Contacto
 
-- Proyecto desarrollado por comayocode
-- Contacto: [por definir]
-- GitHub: [por definir]
+- Proyecto desarrollado por [comayocode](https://github.com/comayocode)
+- GitHub: [comayocode](https://github.com/comayocode)
 
-> Buscar trabajo no debería significar perder tiempo con empresas que no te interesan.
+> Ahorra tiempo ocultando vacantes spam de empresas que no te interesan.
