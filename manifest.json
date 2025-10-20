@@ -7,11 +7,15 @@
   "content_scripts": [
     {
       "matches": ["*://co.computrabajo.com/*"],
-      "js": ["content.js"]
+      "js": [
+        "content/components/toast.js",
+        "content/components/cleaner.js",
+        "content/content.js"
+      ]
     }
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "popup/popup.html",
     "default_icon": {
       "128": "icons/icon128.png"
     }
