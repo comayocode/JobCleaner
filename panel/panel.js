@@ -7,7 +7,7 @@ if (!document.getElementById('jobCleanerPanel')) {
     position: 'fixed',
     top: '20px',
     right: '20px',
-    width: '320px',
+    width: '360px',
     background: 'rgba(234, 234, 234, 0.75)',
     backdropFilter: 'blur(8px)',
     borderRadius: '12px',
@@ -21,17 +21,20 @@ if (!document.getElementById('jobCleanerPanel')) {
 
   panel.innerHTML = `
     <h1 style="margin:0 0 12px 0; font-size:17px; font-weight:700;">JobCleaner</h1>
-
-    <div style="display:flex; align-items:center; margin-bottom:12px; justify-content:space-between;">
-      <span>Habilitar limpieza de ofertas</span>
-      <label class="toggle">
-        <input type="checkbox" id="toggleExtension">
-        <span class="slider"></span>
-      </label>
+    <hr style="margin:0 0 15px 0" >
+    <div class="toggle-container">
+      <h2 style="font-size:15px; font-weight:600; margin:0 0 10px 0;">Configuración</h2>
+      <div style="display:flex; align-items:center; margin-bottom:4px; justify-content:space-between;">
+        <span>Habilitar limpieza de ofertas</span>
+        <label class="toggle">
+          <input type="checkbox" id="toggleExtension">
+          <span class="slider"></span>
+        </label>
+      </div>
     </div>
 
-    <label  style="display:block; margin-bottom:12px;">
-      <span class="input-title">Empresas bloqueadas: </span>
+    <label style="display:block; margin-bottom:20px;">
+      <h2 class="lista-empresas" style="font-size:15px; font-weight:600; margin:0 0 10px 0;">Empresas bloquedas</h2>
       <div id="empresasInput" class="badges-container"></div>
     </label>
 
@@ -41,9 +44,103 @@ if (!document.getElementById('jobCleanerPanel')) {
 
   document.body.appendChild(panel);
 
+  // === Agregar icono de ayuda con tooltip solo en hover del SVG ===
+  function agregarIconoAyuda() {
+    const titulo = document.querySelector('#jobCleanerPanel .lista-empresas');
+    if (!titulo) return;
+
+    // Asegurar que el H2 sea inline-flex y esté alineado verticalmente
+    Object.assign(titulo.style, {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '8px'
+    });
+
+    // Crear contenedor del icono
+    const iconoContenedor = document.createElement('span');
+    Object.assign(iconoContenedor.style, {
+      display: 'inline-flex',
+      position: 'relative',
+      cursor: 'help',
+      verticalAlign: 'center',
+
+    });
+
+    // SVG del icono ?
+    iconoContenedor.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#313944" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10" fill="none"></circle>
+      <path d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 2-3 4"></path>
+      <line x1="12" y1="17" x2="12" y2="17"></line>
+    </svg>
+  `;
+
+    // Crear tooltip
+    const tooltip = document.createElement('div');
+    tooltip.textContent = 'Agrega empresas separándolas por comas, o pulsa Enter. No podrás agregar 2 veces una misma empresa.';
+    Object.assign(tooltip.style, {
+      position: 'absolute',
+      bottom: '125%',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      background: '#141414e8',
+      color: '#eaeaeaff',
+      padding: '6px 10px',
+      borderRadius: '6px',
+      fontSize: '12px',
+      fontWeight: '400',
+      whiteSpace: 'normal',
+      width: '200px',
+      textAlign: 'center',
+      opacity: '0',
+      pointerEvents: 'none',
+      transition: 'opacity 0.2s ease, transform 0.2s ease',
+      zIndex: '9999'
+    });
+
+    // Triangulito inferior del tooltip
+    const arrow = document.createElement('div');
+    Object.assign(arrow.style, {
+      position: 'absolute',
+      top: '99%',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      width: '0',
+      height: '0',
+      borderLeft: '6px solid transparent',
+      borderRight: '6px solid transparent',
+      borderTop: '6px solid #313944'
+    });
+    tooltip.appendChild(arrow);
+
+    // Agregar tooltip al contenedor
+    iconoContenedor.appendChild(tooltip);
+
+    // Mostrar/Ocultar tooltip en hover SOLO del icono
+    iconoContenedor.addEventListener('mouseenter', () => {
+      tooltip.style.opacity = '1';
+      tooltip.style.transform = 'translateX(-50%) translateY(-4px)';
+    });
+    iconoContenedor.addEventListener('mouseleave', () => {
+      tooltip.style.opacity = '0';
+      tooltip.style.transform = 'translateX(-50%) translateY(0)';
+    });
+
+    // Insertar el icono justo después del título
+    titulo.appendChild(iconoContenedor);
+  }
+
+  // Ejecutar después de crear el panel
+  agregarIconoAyuda();
+
   // --- Estilos ---
   const style = document.createElement('style');
   style.textContent = `
+
+    .toggle-container {
+      margin-bottom: 20px;
+    }
+
     .toggle {
       position: relative;
       display: inline-block;
